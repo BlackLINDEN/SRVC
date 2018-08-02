@@ -14,10 +14,13 @@ public class CanvasView extends View {
 
     Paint p;
     ArrayList<String> xxx;
+    ArrayList<Valami> yyy;
 
     public CanvasView(Context context, AttributeSet set) {
         super(context,set);
         xxx = new ArrayList<>();
+
+        yyy = new ArrayList<>();
         p = new Paint();
         p.setColor(Color.GREEN);
         p.setStrokeWidth(5f);
@@ -26,7 +29,7 @@ public class CanvasView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        T(canvas,xxx);
+        T(canvas,yyy);
         invalidate();
     }
 
@@ -34,20 +37,20 @@ public class CanvasView extends View {
 
     }
 
-    public void XXX(ArrayList<String> xxx){
-        this.xxx.clear();
-        this.xxx.addAll(xxx);
+    public void XXX(ArrayList<Valami> yyy){
+        this.yyy.clear();
+        this.yyy.addAll(yyy);
     }
 
-    void T(Canvas c, ArrayList<String> al) {
+    void T(Canvas c, ArrayList<Valami> al) {
         if (!al.isEmpty()) {
-            for (String a : al) {
-                switch (a) {
+            for (Valami a : al) {
+                switch (a.név) {
                     case "F":
-                        c.drawCircle(ThreadLocalRandom.current().nextInt(0, c.getWidth() + 1), ThreadLocalRandom.current().nextInt(0, 100 + 1), 10, p);
+                        c.drawCircle(c.getWidth()/2, c.getHeight()/2, a.sug, p);
                         break;
                     case "X":
-                        c.drawLine(ThreadLocalRandom.current().nextInt(0, c.getWidth() + 1), ThreadLocalRandom.current().nextInt(0, 90 + 1), ThreadLocalRandom.current().nextInt(0, 100 + 1), 100, p);
+                        c.drawLine(0, 0, 0, 100, p);
                         break;
                 }
             }

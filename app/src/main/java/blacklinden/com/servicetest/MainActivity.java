@@ -1,51 +1,64 @@
 package blacklinden.com.servicetest;
 
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Button;
 
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private CanvasView canvas;
-    public Vevő vevő;
+    private Button b2,b;
+
+    private L_Service lService;
+    private boolean bounded_e =false;
+    Intent service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        b = findViewById(R.id.button);
         canvas = findViewById(R.id.canv);
-        setupServiceReceiver();
-        nyissSzervizt();
+        service = new Intent(MainActivity.this, L_Service.class);
 
+        bindService(service,kapcsolat,Context.BIND_AUTO_CREATE);
     }
 
-    private void nyissSzervizt(){
-        Intent i = new Intent(this,L_Service.class);
-        i.putExtra("axioma","X");
-        i.putExtra("vevő",vevő);
-
-        startService(i);
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        unbindService(kapcsolat);
     }
 
 
 
-    public void setupServiceReceiver() {
-        vevő = new Vevő(new Handler());
-        // This is where we specify what happens when data is received from the service
-        vevő.setReceiver(new Vevő.Receiver() {
-            @Override
-            public void onReceiveResult(int resultCode, Bundle resultData) {
-                if (resultCode == RESULT_OK) {
-                    ArrayList<String> resultValue = resultData.getStringArrayList("res");
-                    canvas.XXX(resultValue);
-                    //Toast.makeText(MainActivity.this, resultValue, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+
+
+    private ServiceConnection kapcsolat = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bounded_e = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            L_Service.Binderem myBinder = (L_Service.Binderem) service;
+            lService = myBinder.getService();
+            bounded_e = true;
+            canvas.XXX(lService.valamis);
+        }
+    };
+
+
 }
